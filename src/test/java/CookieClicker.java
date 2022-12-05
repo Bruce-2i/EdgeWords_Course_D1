@@ -17,9 +17,9 @@ import java.nio.file.Paths;
 
 public class CookieClicker {
 
-    static String saveFile = System.getenv("APPDATA") + "\\CookieClicker.txt";
+    static File saveFile = new File(System.getenv("APPDATA") + "\\CookieClicker.txt");
     static String readSaveFile() throws IOException {
-        return Files.readString(Paths.get(saveFile), StandardCharsets.UTF_8);
+        return Files.readString(Paths.get(saveFile.getPath()), StandardCharsets.UTF_8);
     }
     void writeSaveFile(String saveToken) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile));
@@ -30,8 +30,12 @@ public class CookieClicker {
 
     public static WebDriver driver;
     @BeforeAll
-    static void loadCookieClicker()
-    {
+    static void loadCookieClicker() throws IOException {
+
+        if(!saveFile.exists()) {
+            saveFile.createNewFile();
+        }
+
         driver = new ChromeDriver();
 
         driver.get("https://orteil.dashnet.org/cookieclicker/");
