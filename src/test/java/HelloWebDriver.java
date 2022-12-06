@@ -49,14 +49,14 @@ public class HelloWebDriver {
         navigate = webDriver.navigate();
         navigate.to(url);
 
-        //Click on login page button.
+        //Click login button.
         webDriver.findElement(By.linkText("Login To Restricted Area")).click();
 
         //Enter Login details
         webDriver.findElement(By.id("username")).sendKeys(username);
         webDriver.findElement(By.id("password")).sendKeys(password);
 
-        //Submit the details.
+        //Submit those details.
         webDriver.findElement(By.linkText("Submit")).click();
 
         //Instantiate the detailsAccepted bool.
@@ -73,12 +73,37 @@ public class HelloWebDriver {
             //If there is an alert present...
             if(w.until(ExpectedConditions.alertIsPresent()) != null)
             {
+                //... we mark the details as "accepted = false".
                 detailsAccepted = false;
             }
         }
         catch (Exception exception)
         {
-            //I must put a catch here, idk what to do with it...
+            /*
+            I must put a catch here, idk what to do with it...
+            So here is some ASCII art I guess <3
+            ___██__________██
+            ___█▒█________█▒█
+            __█▒███____███▒█
+            __█▒████████▒▒█
+            __█▒████▒▒█▒▒██
+            __████▒▒▒▒▒████
+            ___█▒▒▒▒▒▒▒████
+            __█▒▒▒▒▒▒▒▒████______█
+            _██▒█▒▒▒▒▒█▒▒████__█▒█
+            _█▒█●█▒▒▒█●█▒▒███_█▒▒█
+            _█▒▒█▒▒▒▒▒█▒▒▒██_█▒▒█
+            __█▒▒▒=▲=▒▒▒▒███_██▒█
+            __██▒▒█♥█▒▒▒▒███__██▒█
+            ____███▒▒▒▒████____█▒█
+            ______██████________███
+            _______█▒▒████______██
+            _______█▒▒▒▒▒████__██
+            _______█▒██▒██████▒█
+            _______█▒███▒▒▒█████
+            _____█▒████▒▒▒▒████
+            ______█▒███▒██████__
+            */
         }
 
         //Check if the details where refused.
@@ -86,6 +111,20 @@ public class HelloWebDriver {
         {
             //Fail the test if the detail are incorrect.
             throw new Exception("Failed to Login using details provided.");
+        }
+        else
+        {
+            //Wait until the user is logged in.
+            WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(2));
+            wait.until(ExpectedConditions.elementToBeClickable(webDriver.findElement(By.linkText("Log Out"))));
+
+            //Logout.
+            webDriver.findElement(By.linkText("Log Out")).click();
+
+            //Wait until alert is present.
+            if(wait.until(ExpectedConditions.alertIsPresent()) != null) {
+                webDriver.switchTo().alert().accept();
+            }
         }
     }
 
